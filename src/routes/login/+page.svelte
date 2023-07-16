@@ -1,4 +1,6 @@
-<script lang="js">
+<script lang="ts">
+	import google from '$lib/google.svg';
+	import github from '$lib/github.svg';
 	//redirect if loged in
 	import { goto } from '$app/navigation';
 	$: if ($user && $user.emailVerified) goto('/todo');
@@ -7,16 +9,17 @@
 			console.log('redirected');
 		});
 	}
-
 	import { auth } from '$lib/firebase';
 	import { userStore } from 'sveltefire';
+
 	let user = userStore(auth);
 
 	//styling
+
 	import { fly } from 'svelte/transition';
 	let signInMode = true;
 	import MediaQuery from 'svelte-media-queries';
-	let smallScreen;
+	let smallScreen: boolean;
 	let error = '';
 	let forgotPasswordMode = false;
 	let awaitPasswordReset = false;
@@ -26,6 +29,7 @@
 	}
 
 	$: emailVerificationMode = $user !== null && $user?.emailVerified === false;
+
 	//auth
 	import {
 		signInWithEmailAndPassword,
@@ -93,7 +97,7 @@
 		// @ts-ignore
 		error = 'Felj! ' + _error.code;
 	}
-	function signUp(e) {
+	function signUp(e: any) {
 		e.preventDefault();
 		if (email === '' || password === '' || name === '') {
 			error = 'Udfyld venligst alle felter.';
@@ -125,7 +129,7 @@
 				error = 'Felj! ' + _error.code;
 			});
 	}
-	function signIn(e) {
+	function signIn(e: any) {
 		e.preventDefault();
 		console.log('signing in');
 		if (email === '' || password === '') {
@@ -174,12 +178,13 @@
 	>
 		<div class="flip-card-front">
 			<!-- login -->
+
 			<div
 				class:right-panel-active={!signInMode}
 				class:sm={smallScreen}
 				class:lg={!smallScreen}
 				class:minimize={(emailVerificationMode || forgotPasswordMode) && smallScreen}
-				class="container"
+				class="container bg-white rounded-container-token relative overflow-hidden flex flex-col items-center justify-center"
 				id="container"
 			>
 				{#if !forgotPasswordMode}
@@ -194,28 +199,55 @@
 						class:lg={!smallScreen}
 						class="form-container sign-up-container"
 					>
-						<form on:submit|preventDefault={signUp}>
-							<h1>Opret konto</h1>
+						<form
+							class="flex bg-white items-center justify-center flex-col py-0 px-14 h-full text-center"
+							on:submit|preventDefault={signUp}
+						>
+							<h1 class=" font-heading-token text-3xl text-slate-900">Opret konto</h1>
 
-							<div class="social-container">
-								<button type="button" on:click={githubAuth} class="provider social"
-									><i class="fa-brands fa-github" /></button
+							<div class="my-4">
+								<button
+									type="button"
+									on:click={githubAuth}
+									class=" text-black rounded-full aspect-square py-1 px-2 mx-3 cursor-pointer"
+									><img src={github} alt="github signup" class="w-9 h-9" /></button
 								>
 
-								<button type="button" on:click={googleAutn} class="provider social"
-									><i class="fa-brands fa-google" /></button
+								<button
+									type="button"
+									on:click={googleAutn}
+									class=" text-black rounded-full aspect-square py-1 px-2 mx-3 cursor-pointer"
+									><img src={google} alt="google signup" class="w-9 h-9" /></button
 								>
 							</div>
-							<span>eller opret dig med email og adgangskode.</span>
-							<input autocomplete="name" bind:value={name} type="text" placeholder="Name" />
-							<input autocomplete="email" bind:value={email} type="email" placeholder="Email" />
+							<span class="font-token text-surface-400 text-sm font-normal"
+								>eller opret dig med email og adgangskode.</span
+							>
 							<input
+								class="text-slate-900 rounded-token bg-surface-50 border-none px-4 py-2 m-2 w-full"
+								autocomplete="name"
+								bind:value={name}
+								type="text"
+								placeholder="Name"
+							/>
+							<input
+								class="text-slate-900 rounded-token bg-surface-50 border-none px-4 py-2 m-2 w-full"
+								autocomplete="email"
+								bind:value={email}
+								type="email"
+								placeholder="Email"
+							/>
+							<input
+								class="text-slate-900 rounded-token bg-surface-50 border-none px-4 py-2 m-2 w-full"
 								bind:value={password}
 								type="password"
 								placeholder="Adgangskode"
 								autocomplete="current-password"
 							/>
-							<button type="submit">Opret konto</button>
+							<button
+								class="variant-filled-primary w-44 py-2 rounded-token mt-6 mb-2 shadow-lg"
+								type="submit">Opret konto</button
+							>
 							<p id="error">{error}</p>
 						</form>
 					</div>
@@ -230,34 +262,57 @@
 						class:lg={!smallScreen}
 						class="form-container sign-in-container"
 					>
-						<form on:submit|preventDefault={signIn}>
-							<h1>Log ind</h1>
+						<form
+							class="flex bg-white items-center justify-center flex-col py-0 px-14 h-full text-center"
+							on:submit|preventDefault={signIn}
+						>
+							<h1 class=" font-heading-token text-3xl text-slate-900">Log ind</h1>
 
-							<div class="social-container">
-								<button type="button" on:click={githubAuth} class="provider social"
-									><i class="fa-brands fa-github" /></button
+							<div class="my-4">
+								<button
+									type="button"
+									on:click={githubAuth}
+									class=" text-black rounded-full aspect-square py-1 px-2 mx-3 cursor-pointer"
+									><img src={github} alt="github signup" class="w-9 h-9" /></button
 								>
-								<button type="button" on:click={googleAutn} class=" provider rsocial"
-									><i class="fa-brands fa-google" /></button
+
+								<button
+									type="button"
+									on:click={googleAutn}
+									class=" text-black rounded-full aspect-square py-1 px-2 mx-3 cursor-pointer"
+									><img src={google} alt="google signup" class="w-9 h-9" /></button
 								>
 							</div>
-							<span>eller log ind med email.</span>
-							<input autocomplete="email" bind:value={email} type="email" placeholder="Email" />
+							<span class="font-token text-surface-400 text-sm font-normal"
+								>eller log ind med email.</span
+							>
 							<input
+								class="text-slate-900 rounded-token bg-surface-50 border-none px-4 py-2 m-2 w-full"
+								autocomplete="email"
+								bind:value={email}
+								type="email"
+								placeholder="Email"
+							/>
+							<input
+								class="text-slate-900 rounded-token bg-surface-50 border-none px-4 py-2 m-2 w-full"
 								autocomplete="current-password"
 								bind:value={password}
 								type="password"
 								placeholder="Adgangskode"
 							/>
+
 							<button
 								type="button"
-								class="link-white"
+								class="text-black font-token underline w-fit h-min border-none cursor-pointer p-0 bg-transparent mt-2"
 								on:click={() => {
 									forgotPasswordMode = true;
 									error = '';
 								}}>Glemt din adgangskode?</button
 							>
-							<button type="submit">Log ind</button>
+							<button
+								class="variant-filled-primary w-44 py-2 rounded-token mt-6 shadow-lg mb-2"
+								type="submit">Log ind</button
+							>
 							<p id="error">{error}</p>
 						</form>
 					</div>
@@ -272,12 +327,16 @@
 						class:lg={!smallScreen}
 						class="overlay-container"
 					>
-						<div class="overlay bg-gradient-to-br variant-gradient-primary-secondary">
+						<div class="overlay bg-gradient-to-br variant-gradient-primary-tertiary">
 							<div class="overlay-panel overlay-left">
-								<h1>Har vi ik' set dig før?</h1>
-								<p>Log ind hvis du allerede har en konto.</p>
+								<h1 class=" font-heading-token text-3xl font-bold text-white">
+									Har vi ik' set dig før?
+								</h1>
+								<p class="font-token text-white text-lg mt-5 mb-8 font-normal">
+									Log ind hvis du allerede har en konto.
+								</p>
 								<button
-									class="ghost"
+									class="variant-glass w-44 py-2 rounded-token"
 									on:click={() => {
 										signInMode = true;
 										error = '';
@@ -286,10 +345,12 @@
 								>
 							</div>
 							<div class="overlay-panel overlay-right">
-								<h1>Er du ny her?</h1>
-								<p>Opret dig og start eventyret.</p>
+								<h1 class=" font-heading-token text-3xl font-bold text-white">Er du ny her?</h1>
+								<p class="font-token text-white text-lg font-normal mt-5 mb-8">
+									Opret dig og start eventyret.
+								</p>
 								<button
-									class="ghost"
+									class="variant-glass w-44 py-2 rounded-token"
 									on:click={() => {
 										signInMode = false;
 										error = '';
@@ -301,7 +362,7 @@
 					</div>
 				{:else if !awaitPasswordReset}
 					<div
-						class="forgot-password"
+						class="w-full"
 						in:fly={{
 							y: -200,
 							duration: transitionDuration,
@@ -313,40 +374,53 @@
 							on:click={() => {
 								forgotPasswordMode = false;
 							}}
-							style="color: #000"
-							class="link-white"><i class="fa-solid fa-arrow-left" /> Tilbage</button
+							class="link-white text-black underline w-fit h-min border-none cursor-pointer p-0 bg-transparent mt-2"
+							><i class="fa-solid fa-arrow-left" /> Tilbage</button
 						>
 						<form
+							class="flex bg-white items-center justify-center flex-col py-0 px-20 h-full text-center"
 							on:submit={(e) => {
 								e.preventDefault();
 								resetPassword();
 							}}
 						>
-							<h1>Nulstil Adgangskode</h1>
-							<span>Skriv e-mail adressen til din konto.</span>
+							<h1 class="mt-6 font-heading-token text-3xl text-slate-900">Nulstil Adgangskode</h1>
+							<span class="font-token text-slate-500 text-md font-normal my-4"
+								>Skriv e-mail adressen til din konto.</span
+							>
 
-							<input autocomplete="email" bind:value={email} type="email" placeholder="Email" />
-							<button class="reset-btn">Nulstil</button>
+							<input
+								class="text-slate-900 rounded-token border-none px-4 py-2 m-2 w-full bg-surface-50"
+								autocomplete="email"
+								bind:value={email}
+								type="email"
+								placeholder="Email"
+							/>
+							<button
+								class="bg-gradient-to-br variant-gradient-tertiary-primary rounded-token font-token text-token px-8 py-2 my-4"
+								>Nulstil</button
+							>
 							<p id="error">{error}</p>
 						</form>
 					</div>
 				{:else}
 					<div
-						class="forgot-password"
+						class="w-full"
 						transition:fly={{
 							y: -200,
 							duration: transitionDuration,
 							delay: transitionDuration
 						}}
 					>
-						<h1>Email sendt</h1>
+						<h1 class="font-heading-token text-3xl text-slate-900">Email sendt</h1>
 						<p>Tjek din email og følg instruktionerne.</p>
 						<button
 							on:click={() => {
 								forgotPasswordMode = false;
 								awaitPasswordReset = false;
 							}}
-							class="link-white"><i class="fa-solid fa-arrow-left" /> Tilbage</button
+							class="text-black font-token underline w-fit h-min border-none cursor-pointer p-0 bg-transparent mt-2"
+							><i class="fa-solid fa-arrow-left" /> Tilbage</button
 						>
 					</div>
 				{/if}
@@ -354,115 +428,41 @@
 		</div>
 		<!-- class:minimize={emailVerificationMode} -->
 		<div class=" flip-card-back">
-			<div class="email">
-				<h1>Vi har sendt en email til</h1>
+			<div
+				class="p-1 rounded-container-token bg-gradient-to-br variant-gradient-primary-tertiary flex flex-col items-center justify-center h-full"
+			>
+				<h1 class="font-bold font-heading-token text-3xl text-white">Vi har sendt en email til</h1>
 				<button class="link-color" on:click={cancelCreateUser}>
 					<strong><i class="fa-solid fa-arrow-left" /> {$user?.email}</strong>
 				</button>
 				<p>Tjek din mail og bekræft din email adresse. Tip: Tjek spam</p>
-				<!-- resend button -->
-				<button
-					class="link-color"
-					on:click={() => {
-						sendEmailVerification(auth.currentUser);
-					}}>Send ny email</button
-				>
-				<button
-					on:click={async () => {
-						await reload(auth.currentUser);
-						if (auth.currentUser?.emailVerified || $user?.emailVerified) {
-							location.reload();
-						} else {
-							console.log('not verified', $user, auth.currentUser);
-						}
-					}}>Jeg har godkendt</button
-				>
+				<div class="flex gap-x-6 gap-y-4 flex-wrap w-full justify-center px-8 mt-8">
+					<button
+						on:click={() => {
+							if (auth.currentUser) sendEmailVerification(auth.currentUser);
+						}}
+						class="variant-ghost-surface w-48 py-2 rounded-token"
+						>Send ny email
+					</button>
+
+					<button
+						class="variant-filled-primary w-48 py-2 rounded-token"
+						on:click={async () => {
+							if (auth.currentUser) await reload(auth.currentUser);
+							if (auth.currentUser?.emailVerified || $user?.emailVerified) {
+								location.reload();
+							} else {
+								console.log('not verified', $user, auth.currentUser);
+							}
+						}}>Jeg har godkendt</button
+					>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <style>
-	.provider {
-		margin: 0 0.5rem;
-		background: transparent;
-		font-size: 25px;
-		color: #000;
-		width: 35px;
-		height: 35px;
-		padding: 0;
-		border-radius: 50%;
-		border: none;
-		cursor: pointer;
-	}
-	.forgot-password {
-		padding: 1rem !important;
-		width: 100%;
-	}
-	.forgot-password form {
-		width: 100%;
-		padding: 0;
-		max-width: 600px;
-	}
-	.forgot-password .reset-btn {
-		background: -webkit-linear-gradient(
-			to right,
-			#1a2980,
-			#26d0ce
-		); /* Chrome 10-25, Safari 5.1-6 */
-		background: linear-gradient(to right, #1a2980, #26d0ce);
-		border: none;
-		margin-top: 1rem;
-		cursor: pointer;
-	}
-	.forgot-password h1 {
-		margin: 1rem;
-		font-size: 2.5rem;
-	}
-	.forgot-password p {
-		font-weight: 300;
-	}
-	.forgot-password {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-	}
-	.email {
-		padding: 0.5rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		background: #1a2980; /* fallback for old browsers */
-		background: -webkit-linear-gradient(
-			to right,
-			#1a2980,
-			#26d0ce
-		); /* Chrome 10-25, Safari 5.1-6 */
-		background: linear-gradient(45deg, #1a2980, #26d0ce);
-		border-radius: 10px;
-		color: #fff;
-		border: solid 1px #fff;
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-	}
-	.email strong {
-		margin: 0.5rem 0;
-		font-weight: 500;
-	}
-	.email p {
-		font-weight: 300;
-	}
-	.email h1 {
-		font-size: 2.8rem;
-	}
-	.email button {
-		background: #fff;
-		color: #1a2980;
-	}
-
 	#error {
 		color: red;
 		font-weight: 300;
@@ -471,79 +471,7 @@
 	* {
 		box-sizing: border-box;
 	}
-	h1 {
-		font-weight: bold;
-		margin: 0;
-	}
-	p {
-		font-size: 14px;
-		font-weight: 100;
-		line-height: 20px;
-		letter-spacing: 0.5px;
-		margin: 20px 0 30px;
-	}
-	span {
-		font-size: 12px;
-	}
-	a {
-		color: #333;
-		font-size: 14px;
-		text-decoration: none;
-		margin: 15px 0;
-	}
-	a i {
-		font-size: 22px;
-	}
-	button {
-		border-radius: 20px;
-		border: 1px solid color-mix(in srgb, #1a2980 65%, #26d0ce);
-		background-color: color-mix(in srgb, #1a2980 65%, #26d0ce);
-		color: #ffffff;
-		font-size: 12px;
-		font-weight: bold;
-		padding: 12px 45px;
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		transition: transform 80ms ease-in;
-	}
-	button:active {
-		transform: scale(0.95);
-	}
-	button:focus {
-		outline: none;
-	}
-	button.ghost {
-		background-color: transparent;
-		border-color: #ffffff;
-	}
-	form {
-		background-color: #ffffff;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
-		padding: 0 50px;
-		height: 100%;
-		text-align: center;
-	}
-	input {
-		background-color: #eee;
-		border: none;
-		padding: 12px 15px;
-		margin: 8px 0;
-		width: 100%;
-	}
-	.container {
-		background-color: #fff;
-		border-radius: 10px;
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-		position: relative;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
+
 	.container.lg {
 		width: 768px;
 		max-width: 100%;
@@ -605,20 +533,7 @@
 	.container.right-panel-active .sign-up-container.sm {
 		transform: translateY(100%);
 	}
-	@keyframes show {
-		0%,
-		49.99% {
-			opacity: 0;
-			z-index: 1;
-		}
 
-		50%,
-		100% {
-			opacity: 1;
-			z-index: 5;
-		}
-	}
-	/* this */
 	.overlay-container {
 		position: absolute;
 		overflow: hidden;
@@ -684,24 +599,13 @@
 	.container.right-panel-active .overlay-right {
 		transform: translateX(20%);
 	}
-	.social-container {
-		margin: 20px 0;
-	}
-	.social-container a {
-		border: 1px solid #dddddd;
-		border-radius: 50%;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		margin: 0 5px;
-		height: 40px;
-		width: 40px;
-	}
+
 	.flip-card {
 		background-color: transparent;
 		border-radius: 10px;
 
 		perspective: 1000px; /* Remove this if you don't want the 3D effect */
+		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 	}
 	.flip-card.lg {
 		width: 768px;
@@ -757,7 +661,7 @@
 	.minimize {
 		min-height: 450px !important;
 	}
-	.link-white {
+	/* .link-white {
 		background: transparent !important;
 		color: #000 !important;
 		text-decoration: underline;
@@ -767,7 +671,7 @@
 		cursor: pointer;
 		padding: 0;
 		margin: 1rem;
-	}
+	} */
 	.link-color {
 		background: transparent !important;
 		color: #fff !important;
@@ -778,13 +682,5 @@
 		cursor: pointer;
 		padding: 0;
 		margin: 1rem;
-	}
-	.full-screen {
-		display: flex;
-		height: 100%;
-		min-height: 100vh;
-		width: 100%;
-		justify-content: center;
-		align-items: center;
 	}
 </style>

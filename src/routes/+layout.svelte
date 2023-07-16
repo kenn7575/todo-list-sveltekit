@@ -1,7 +1,4 @@
 <script lang="ts">
-	// The ordering of these imports is critical to your app working properly
-	import '@skeletonlabs/skeleton/themes/theme-modern.css';
-
 	// This contains the bulk of Skeletons required styles:
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 
@@ -9,6 +6,11 @@
 	import '../app.postcss';
 </script>
 
-<div data-name="main" class="min-h-screen w-full flex justify-center items-center">
-	<slot />
+<div data-name="main" class="max-h-full overflow-y-auto w-full">
+	<main class="w-full flex justify-center min-h-screen items-center">
+		<slot />
+	</main>
 </div>
+
+<style>
+</style>

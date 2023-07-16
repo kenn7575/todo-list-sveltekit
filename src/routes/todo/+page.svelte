@@ -2,33 +2,50 @@
 <script>
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 	import { auth } from '$lib/firebase.js';
+	import { signOut } from 'firebase/auth';
 	import { goto } from '$app/navigation';
+	import logo from '$lib/logo.png';
 </script>
 
-<div class="container h-full mx-auto flex justify-center items-center">
-	<div class="space-y-5 card variant-glass-surface p-8">
-		<LightSwitch />
-		<h1 class="h1">Let's get cracking bones!</h1>
-		<p>Start by exploring:</p>
-		<ul>
-			<li>
-				<code class="code">/src/routes/+layout.svelte</code> - barebones layout, the CSS import order
-				is critical!
-			</li>
-			<li>
-				<code class="code">/src/app.postcss</code> - minimal css to make the page full screen, may not
-				be relevant for your project
-			</li>
-			<li>
-				<code class="code">/src/routes/+page.svelte</code> - this page, you can replace the contents
-			</li>
-		</ul>
+<div class="w-full h-screen">
+	<header
+		class="w-20 h-full variant-filled-surface flex flex-col items-center py-2 gap-4 justify-between"
+	>
+		<div class="flex flex-col gap-4">
+			<img class="aspect-square w-16 h-16 object-contain" src={logo} alt="logo" />
+			<hr class="w-full border-primary-500" />
+		</div>
+		<nav class="w-full flex">
+			<ul class="w-full flex flex-col items-center gap-8 text-3xl">
+				<li class="w-14 h-14 hover:bg-surface-400 duration-300 rounded-lg">
+					<button class="w-full h-full">
+						<i class="text-primary-900 fa-regular fa-note-sticky" />
+						<p class="text-primary-900 text-sm font-token">Noter</p>
+					</button>
+				</li>
+				<li class="w-14 h-14 hover:bg-surface-400 duration-300 rounded-lg">
+					<button class="w-full h-full">
+						<i class="text-primary-900 fa-solid fa-bars-staggered" />
+						<p class="text-primary-900 text-sm font-token">Lister</p>
+					</button>
+				</li>
+				<li class="w-14 h-14 hover:bg-surface-400 duration-300 rounded-lg">
+					<button class="w-full h-full">
+						<i class="text-primary-900 fa-solid fa-ellipsis" />
+						<p class="text-primary-900 text-sm font-token">Andet</p>
+					</button>
+				</li>
+			</ul>
+		</nav>
+		<!-- signout button  -->
 		<button
 			on:click={() => {
-				auth.signOut().then(() => {
-					goto('/login');
-				});
-			}}>Log ud</button
+				console.log('🚀 ~ file: +page.svelte:43 ~ click:');
+
+				signOut(auth);
+				goto('/login');
+			}}><i class="text-primary-900 fa-solid fa-person-through-window text-2xl" /></button
 		>
-	</div>
+		<LightSwitch />
+	</header>
 </div>
